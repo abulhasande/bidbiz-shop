@@ -1,11 +1,29 @@
 ﻿using BuildingBlocks.CQRS;
+using Catalog.Api.Products.CreateProduct;
 using Catalog.Api.Products.GetProductByCategory;
+using FluentValidation;
 
 namespace Catalog.Api.Products.UpdateProduct
 {
     public record UpdateProductCommand(Guid Id,  string Name, List<string> Category, string Description, string ImageFile, decimal Price)
                                         :ICommand<UpdateProductResult>;
     public record UpdateProductResult(bool IsSuccess);
+
+    public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
+    {
+        public UpdateProductCommandValidator()
+        {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Id is required");
+
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Name is required")
+                .Length(2,150).WithMessage("Name must be between 2 and 150 chars");
+
+            RuleFor(x => x.Price)
+                   .GreaterThan(0).WithMessage("Price must be  > 0");
+        }
+    }
     public class UpdateProductCommandHandler(IDocumentSession session, ILogger<UpdateProductCommandHandler> logger) 
         : ICommandHandler<UpdateProductCommand, UpdateProductResult>
     {
@@ -17,7 +35,7 @@ namespace Catalog.Api.Products.UpdateProduct
 
             if (product == null)
             {
-                throw new ProductNotFoundException();
+                throw new ProductNotFoundException(command.Id);
             }
             product.Name = command.Name;
             product.Category = command.Category;

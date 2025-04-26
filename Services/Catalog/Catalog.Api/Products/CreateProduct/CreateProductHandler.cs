@@ -1,15 +1,32 @@
-﻿namespace Catalog.Api.Products.CreateProduct
+﻿using FluentValidation;
+
+namespace Catalog.Api.Products.CreateProduct
 {
     public record CreateProductCommand(string Name, List<string> Category, string Description, string ImageFile, decimal Price)
          : ICommand<CreateProductResult>;
 
     public record CreateProductResult(Guid Id);
 
-    public class CreateProductCommandHandler(IDocumentSession session)
+    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+    {
+        public CreateProductCommandValidator()
+        {
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
+            RuleFor(x => x.Category).NotEmpty().WithMessage("Category is required");
+            RuleFor(x => x.ImageFile).NotEmpty().WithMessage("ImageFile is required");
+            RuleFor(x => x.Price).NotEmpty().WithMessage("Price is required");
+            RuleFor(x => x.Description).NotEmpty().WithMessage("Description is required");
+
+        }
+    }
+
+    public class CreateProductCommandHandler(IDocumentSession session, ILogger<CreateProductCommandHandler> logger)
         : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
+            logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", command);
+
             //Create Product Entity from Command Obj
             var product = new Product()
             {
@@ -22,12 +39,10 @@
 
 
             //Save to DB
-
             session.Store(product);
             await session.SaveChangesAsync(cancellationToken);
 
             //Return CreateProductResult result
-
             return new CreateProductResult(product.Id);
 
         }
