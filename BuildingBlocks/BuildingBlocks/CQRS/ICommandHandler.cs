@@ -9,13 +9,13 @@ namespace BuildingBlocks.CQRS
 {
     public interface ICommandHanlder<in TCommand>
                        : ICommandHandler<TCommand, Unit>
-                        where TCommand : ICommand<Unit>
+                        where TCommand : ICommandHandler<Unit>
     {
 
     }
     public interface ICommandHandler<in TCommand, TResponse>
                        : IRequestHandler<TCommand, TResponse>
-                            where TCommand : ICommand<TResponse>
+                            where TCommand : ICommandHandler<TResponse>
                             where TResponse : notnull
     {
     }
