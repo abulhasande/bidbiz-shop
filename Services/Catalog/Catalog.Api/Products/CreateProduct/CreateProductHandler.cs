@@ -20,13 +20,12 @@ namespace Catalog.Api.Products.CreateProduct
         }
     }
 
-    public class CreateProductCommandHandler(IDocumentSession session, ILogger<CreateProductCommandHandler> logger)
+    public class CreateProductCommandHandler(IDocumentSession session)
         : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
-            logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", command);
-
+    
             //Create Product Entity from Command Obj
             var product = new Product()
             {
