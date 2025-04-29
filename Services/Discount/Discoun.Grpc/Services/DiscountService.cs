@@ -33,6 +33,8 @@ namespace Discoun.Grpc.Services
             if (coupon is null)
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "InValid request object"));
 
+            var sdfs = await dbContext.Coupones.FirstOrDefaultAsync(x => x.ProductName == request.Coupon.ProductName);
+
             dbContext.Coupones.Add(coupon);
             await dbContext.SaveChangesAsync();
 
