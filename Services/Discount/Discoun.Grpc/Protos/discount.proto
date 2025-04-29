@@ -21,16 +21,16 @@ message GetDiscountRequest {
 message CouponModel {
 	int32 id = 1;
 	string productName = 2;
-	string descripion = 3;
+	string description = 3;
 	int32 amount = 4;
 }
 
 message CreateDiscountRequest {
-	CouponModel productName = 1;
+	CouponModel coupon = 1;
 }
 
 message UpdateDiscountRequest {
-	CouponModel productName = 1;
+	CouponModel coupon = 1;
 }
 
 message DeleteDiscountRequest {
