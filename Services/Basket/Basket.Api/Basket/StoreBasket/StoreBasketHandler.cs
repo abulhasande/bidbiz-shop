@@ -1,6 +1,7 @@
 ﻿using Basket.Api.Data;
 using Basket.Api.Models;
 using BuildingBlocks.CQRS;
+using Discount.Grpc;
 using FluentValidation;
 
 namespace Basket.Api.Basket.StoreBasket
@@ -18,15 +19,28 @@ namespace Basket.Api.Basket.StoreBasket
         }
     }
 
-    public class StoreBasketCommandHandler(IBasketRepository repository) : ICommandHandler<StoreBasketCommand, StoreBasketResult>
+    public class StoreBasketCommandHandler(IBasketRepository repository, DiscountProtoService.DiscountProtoServiceClient discountProto) 
+        : ICommandHandler<StoreBasketCommand, StoreBasketResult>
     {
         public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
         {
+            await DeductDiscount(command.Cart, cancellationToken);
+
             //Store in DB
 
             await repository.StoreBasket(command.Cart, cancellationToken);
 
             return new StoreBasketResult(command.Cart.UserName);
+        }
+
+        private async Task DeductDiscount(ShoppingCart cart, CancellationToken cancellationToken)
+        {
+            // Communicate with the Discount Grpc service for
+            foreach (var item in cart.Items)
+            {
+                var coupon = await discountProto.GetDiscountAsync(new GetDiscountRequest { ProductName = item.ProductName }, cancellationToken: cancellationToken);
+                item.Price -= coupon.Amount;
+            }
         }
     }
 }
