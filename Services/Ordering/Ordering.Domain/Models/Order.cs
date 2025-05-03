@@ -26,7 +26,7 @@ namespace Ordering.Domain.Models
             private set { }
         }
 
-        public static Order Create(OrderId id, CustomerId customerId, OrderName orderName, Address shippingAddress, Address billingAddress, Payment payment, OrderStatus status)
+        public static Order Create(OrderId id, CustomerId customerId, OrderName orderName, Address shippingAddress, Address billingAddress, Payment payment)
         {
             var order = new Order
             {
@@ -36,7 +36,7 @@ namespace Ordering.Domain.Models
                 BillingAddress = billingAddress,
                 ShippingAddress = shippingAddress,
                 Payment = payment,
-                Status = status
+                Status = OrderStatus.Pending,
             };
 
             order.AddDomainEvent(new OrderCreateEvent(order));

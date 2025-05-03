@@ -1,11 +1,10 @@
 ﻿using Basket.Api.Data;
 using BuildingBlocks.CQRS;
 using FluentValidation;
-using System.Windows.Input;
 
 namespace Basket.Api.Basket.DeleteBasket
 {
-    public record DeleteBasketCommand(string userName) : ICommandHandler<DeleteBasketResult>;
+    public record DeleteBasketCommand(string userName) : ICommand<DeleteBasketResult>;
     public record  DeleteBasketResult(bool IsSuccess);
 
     public class DeleteBasketCommandValidator : AbstractValidator<DeleteBasketCommand>
