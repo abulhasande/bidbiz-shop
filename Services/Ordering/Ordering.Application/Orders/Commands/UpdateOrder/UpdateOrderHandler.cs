@@ -13,7 +13,8 @@ namespace Ordering.Application.Orders.Commands.UpdateOrder
         public async Task<UpdateOrderResult> Handle(UpdateOrderCommand command, CancellationToken cancellationToken)
         {
             var orderId = OrderId.Of(command.Order.Id);
-            var order = await dbContext.Orders.FindAsync([orderId], cancellationToken: cancellationToken);
+            var order = await dbContext.Orders
+                                       .FindAsync([orderId], cancellationToken: cancellationToken);
 
             if(order is null)
             {
