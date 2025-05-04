@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Ordering.Domain.Events;
 
-namespace Ordering.Application.Orders.EventHandler
+namespace Ordering.Application.Orders.EventHandler.Domains
 {
     public class OrderUpdatedEventHandler(ILogger<OrderUpdatedEventHandler> logger)
         : INotificationHandler<OrderUpdateEvent>

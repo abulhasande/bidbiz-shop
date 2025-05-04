@@ -2,7 +2,6 @@
 using Carter;
 using Mapster;
 using MediatR;
-using Microsoft.Extensions.DependencyModel.Resolution;
 
 namespace Basket.Api.Basket.GetBasket
 {
