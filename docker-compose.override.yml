@@ -111,9 +111,28 @@ services:
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest 
       - FeatureManagement__OrderFullfillment=false
+    depends_on:
+      - eorderdb
+      - messagebroker
     ports:
       - "6003:8080"
       - "6063:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  yarpapigateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    depends_on:
+      - catalog.api
+      - baskset.api
+      - ordering.api
+    ports:
+      - "6004:8080"
+      - "6064:8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
